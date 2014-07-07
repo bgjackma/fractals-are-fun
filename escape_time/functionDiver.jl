@@ -2,7 +2,7 @@
 module Diver
 include("rubberband.jl")
 
-export view, color_by
+export view, color_by, keep_open
 
 import Color, Cairo, Tk
 import Base: convert, show
@@ -88,6 +88,18 @@ function view(func::Function; domain=Domain{Float64}(-2.0,-1.0,1.0,1.0),
   render!(fc)
   resize!(fc)
   Tk.configure(canvas)
+  fc
+end
+
+# without this function, calling view from a script will kill the window
+function keep_open(fc)
+  if isinteractive()
+    return;
+  end
+  c = Condition()
+  window = Tk.toplevel(fc.canvas)
+  Tk.bind(window, "<Destroy>", _ -> notify(c))
+  wait(c)
 end
 
 function make_window(w, h)

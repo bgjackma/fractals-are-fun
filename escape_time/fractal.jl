@@ -1,7 +1,7 @@
 
 module Fractals
 
-export nova, mandelbrot
+export burning_ship, mandelbrot
 
 macro real_iters(c, recur)
   quote
